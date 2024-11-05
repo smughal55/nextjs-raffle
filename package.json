@@ -9,12 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@rainbow-me/rainbowkit": "workspace:*",
+    "@tanstack/react-query": "^5.59.16",
+    "bcrypt": "^5.1.1",
+    "next": "15.0.1",
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
-    "next": "15.0.1"
+    "viem": "2.x",
+    "wagmi": "^2.12.25"
   },
   "devDependencies": {
+    "ethers": "^6.13.4",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "web3uikit": "^1.0.4"
   }
 }
