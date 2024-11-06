@@ -63,7 +63,9 @@ const RaffleEntrance = () => {
 
   if (isPending) {
     return (
-      <div className="p-5 font-inter text-sm text-gray-500">Loading...</div>
+      <div className="p-5 font-inter text-sm text-center text-gray-500">
+        Loading...
+      </div>
     );
   }
 
@@ -95,11 +97,11 @@ const RaffleEntrance = () => {
   };
 
   return (
-    <div className="p-10 font-satoshi font-semibold text-xl text-gray-700 text-center">
+    <div className="p-5 sm:p-10 font-satoshi font-semibold text-lg sm:text-xl text-gray-700 text-center">
       {raffleAddress ? (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
-            <span className="orange_gradient text-xl">
+            <span className="orange_gradient text-lg sm:text-xl">
               Current Jackpot: {calculateJackpotTotal(EntranceFee, Players)} ETH
             </span>
           </div>
@@ -110,7 +112,7 @@ const RaffleEntrance = () => {
               </div>
             ) : (
               <button
-                className="px-6 py-3 text-xl bg-primary-orange rounded-full text-white hover:bg-orange-600 transition duration-300"
+                className="px-4 py-2 sm:px-6 sm:py-3 text-lg sm:text-xl bg-primary-orange rounded-full text-white hover:bg-orange-600 transition duration-300 w-full sm:w-auto"
                 onClick={() =>
                   writeContract({
                     abi,
@@ -122,7 +124,7 @@ const RaffleEntrance = () => {
                 disabled={isPending}
               >
                 {isPending ? (
-                  <div className="animate-spin spinner-border h-10 w-10 border-b-2 rounded-full"></div>
+                  <div className="animate-spin spinner-border h-8 w-8 sm:h-10 sm:w-10 border-b-2 rounded-full mx-auto"></div>
                 ) : (
                   <div>Enter Raffle</div>
                 )}
@@ -133,18 +135,18 @@ const RaffleEntrance = () => {
             {isConfirming && <div>Waiting for confirmation...</div>}
             {isConfirmed && <div>Transaction confirmed.</div>}
           </div>
-          <div className="text-center font-inter text-lg text-gray-600">
+          <div className="text-center font-inter text-md sm:text-lg text-gray-600">
             <span>Entrance Fee:</span> {ethers.formatEther(EntranceFee || "0")}{" "}
             ETH
           </div>
           <div className="text-center">
             <span className="font-bold">Current Players:</span>
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mt-4">
               {Players &&
                 Players.map((player, index) => (
                   <div
                     key={index}
-                    className="p-3 rounded-md"
+                    className="p-2 sm:p-3 rounded-md"
                     style={{ backgroundColor: getRandomColor() }}
                   >
                     {player}
@@ -158,7 +160,7 @@ const RaffleEntrance = () => {
           </div>
         </div>
       ) : (
-        <div className="p-10 font-inter text-md text-gray-500 text-center">
+        <div className="p-5 sm:p-10 font-inter text-md text-gray-500 text-center">
           <p>Connect your wallet to see the entrance fee.</p>
         </div>
       )}
