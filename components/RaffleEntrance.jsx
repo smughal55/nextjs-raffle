@@ -146,13 +146,15 @@ const RaffleEntrance = () => {
             ETH
           </div>
           <div className="text-center">
-            <span className="font-bold">Current Players:</span>
+            <span className="font-bold text-base sm:text-lg">
+              Current Players:
+            </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mt-3">
               {Players &&
                 Players.map((player, index) => (
                   <div
                     key={index}
-                    className="p-2 sm:p-2.5 rounded-md"
+                    className="p-2 sm:p-2.5 rounded-md text-sm sm:text-base"
                     style={{ backgroundColor: getRandomColor() }}
                   >
                     {player}
@@ -161,8 +163,10 @@ const RaffleEntrance = () => {
             </div>
           </div>
           <div className="text-center">
-            <span className="font-bold">Most Recent Winner:</span>{" "}
-            {RecentWinner}
+            <span className="font-bold text-base sm:text-lg">
+              Most Recent Winner:
+            </span>{" "}
+            <span className="text-sm sm:text-base">{RecentWinner}</span>
           </div>
         </div>
       ) : (
