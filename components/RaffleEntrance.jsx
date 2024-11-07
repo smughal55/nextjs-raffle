@@ -14,19 +14,16 @@ import { ethers, BigNumber, parseEther } from "ethers";
 import { writeContract } from "viem/actions";
 
 const RaffleEntrance = () => {
-  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
-
+  const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const raffleAddress =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
-  let entranceFeeUpdate;
-  //   console.log(isConnected);
-  //   console.log(address);
-  //   console.log(raffleAddress);
-  //   console.log(chainId);
+  let entranceFeeUpdate = "0";
 
-  const { data: hash, error, isPending, writeContract } = useWriteContract();
+  const [alertMessage, setAlertMessage] = useState("");
+
+  const { data: hash, isPending, writeContract } = useWriteContract();
 
   const { data: EntranceFee } = useReadContract({
     abi: abi,
@@ -61,21 +58,24 @@ const RaffleEntrance = () => {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash });
 
-  if (isPending) {
-    return (
-      <div className="p-5 font-inter text-sm text-center text-gray-500">
-        Loading...
-      </div>
-    );
-  }
-
-  //   if (error) {
-  //     return (
-  //       <div className="p-5 font-inter text-sm text-gray-500">
-  //         Error: {error.message}
-  //       </div>
-  //     );
-  //   }
+  const handleEnterRaffle = async () => {
+    try {
+      await writeContract({
+        abi,
+        address: raffleAddress,
+        functionName: "enterRaffle",
+        value: ethers.parseUnits(entranceFeeUpdate, "ether"),
+      });
+    } catch (error) {
+      if (error instanceof BaseError) {
+        setAlertMessage(
+          error.shortMessage || "An error occurred. Please try again."
+        );
+      } else {
+        setAlertMessage("An unexpected error occurred. Please try again.");
+      }
+    }
+  };
 
   const getRandomColor = () => {
     const letters = "0123456789ABCDEF";
@@ -97,56 +97,62 @@ const RaffleEntrance = () => {
   };
 
   return (
-    <div className="p-5 sm:p-10 font-satoshi font-semibold text-lg sm:text-xl text-gray-700 text-center">
+    <div className="p-4 sm:p-8 font-satoshi font-semibold text-base sm:text-lg text-gray-700 text-center">
+      {alertMessage && (
+        <div className="p-3 mb-4 bg-red-100 text-red-600 rounded-md">
+          {alertMessage}
+        </div>
+      )}
       {raffleAddress ? (
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-3 sm:space-y-5">
           <div>
-            <span className="orange_gradient text-lg sm:text-xl">
+            <span className="orange_gradient text-base sm:text-lg">
               Current Jackpot: {calculateJackpotTotal(EntranceFee, Players)} ETH
             </span>
           </div>
           <div className="text-center">
             {Players && MaxPlayers && Players.length >= MaxPlayers ? (
-              <div className="text-red-500">
+              <div className="text-red-500 text-sm sm:text-base">
                 Raffle is full. No more entries allowed.
               </div>
             ) : (
               <button
-                className="px-4 py-2 sm:px-6 sm:py-3 text-lg sm:text-xl bg-primary-orange rounded-full text-white hover:bg-orange-600 transition duration-300 w-full sm:w-auto"
-                onClick={() =>
-                  writeContract({
-                    abi,
-                    address: raffleAddress,
-                    functionName: "enterRaffle",
-                    value: ethers.parseUnits(entranceFeeUpdate, "ether"),
-                  })
-                }
+                className="w-full sm:w-auto px-4 py-2 sm:px-5 sm:py-2.5 text-base sm:text-lg bg-primary-orange rounded-full text-white hover:bg-orange-600 transition duration-300"
+                onClick={handleEnterRaffle}
                 disabled={isPending}
               >
                 {isPending ? (
-                  <div className="animate-spin spinner-border h-8 w-8 sm:h-10 sm:w-10 border-b-2 rounded-full mx-auto"></div>
+                  <div className="animate-spin spinner-border h-6 w-6 sm:h-8 sm:w-8 border-b-2 rounded-full mx-auto"></div>
                 ) : (
                   <div>Enter Raffle</div>
                 )}
               </button>
             )}
             <br />
-            {hash && <div>Transaction Hash: {hash}</div>}
-            {isConfirming && <div>Waiting for confirmation...</div>}
-            {isConfirmed && <div>Transaction confirmed.</div>}
+            {hash && (
+              <div className="text-xs sm:text-sm">Transaction Hash: {hash}</div>
+            )}
+            {isConfirming && (
+              <div className="text-xs sm:text-sm">
+                Waiting for confirmation...
+              </div>
+            )}
+            {isConfirmed && (
+              <div className="text-xs sm:text-sm">Transaction confirmed.</div>
+            )}
           </div>
-          <div className="text-center font-inter text-md sm:text-lg text-gray-600">
+          <div className="text-center font-inter text-sm sm:text-md text-gray-600">
             <span>Entrance Fee:</span> {ethers.formatEther(EntranceFee || "0")}{" "}
             ETH
           </div>
           <div className="text-center">
             <span className="font-bold">Current Players:</span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mt-3">
               {Players &&
                 Players.map((player, index) => (
                   <div
                     key={index}
-                    className="p-2 sm:p-3 rounded-md"
+                    className="p-2 sm:p-2.5 rounded-md"
                     style={{ backgroundColor: getRandomColor() }}
                   >
                     {player}
@@ -160,7 +166,7 @@ const RaffleEntrance = () => {
           </div>
         </div>
       ) : (
-        <div className="p-5 sm:p-10 font-inter text-md text-gray-500 text-center">
+        <div className="p-4 sm:p-8 font-inter text-sm sm:text-md text-gray-500 text-center">
           <p>Connect your wallet to see the entrance fee.</p>
         </div>
       )}
