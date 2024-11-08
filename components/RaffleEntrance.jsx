@@ -77,6 +77,12 @@ const RaffleEntrance = () => {
     }
   };
 
+  // Function to truncate address for mobile view
+  const truncateAddress = (address) => {
+    if (!address) return "";
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  };
+
   const getRandomColor = () => {
     const letters = "0123456789ABCDEF";
     let color = "#";
@@ -157,7 +163,10 @@ const RaffleEntrance = () => {
                     className="p-2 sm:p-2.5 rounded-md text-sm sm:text-base"
                     style={{ backgroundColor: getRandomColor() }}
                   >
-                    {player}
+                    <span className="block sm:hidden">
+                      {truncateAddress(player)}
+                    </span>
+                    <span className="hidden sm:block">{player}</span>
                   </div>
                 ))}
             </div>
@@ -166,7 +175,12 @@ const RaffleEntrance = () => {
             <span className="font-bold text-base sm:text-lg">
               Most Recent Winner:
             </span>{" "}
-            <span className="text-sm sm:text-base">{RecentWinner}</span>
+            <span className="block sm:hidden text-sm sm:text-base">
+              {truncateAddress(RecentWinner)}
+            </span>
+            <span className="hidden sm:block text-sm sm:text-base">
+              {RecentWinner}
+            </span>
           </div>
         </div>
       ) : (
