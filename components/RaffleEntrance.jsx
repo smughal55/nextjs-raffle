@@ -58,6 +58,12 @@ const RaffleEntrance = () => {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash });
 
+  useEffect(() => {
+    if (isConfirmed) {
+      window.location.reload();
+    }
+  }, [isConfirmed]);
+
   const handleEnterRaffle = async () => {
     try {
       await writeContract({
@@ -136,8 +142,12 @@ const RaffleEntrance = () => {
             )}
             <br />
             {hash && (
-              <div className="text-xs sm:text-sm">Transaction Hash: {hash}</div>
+              <div className="text-xs sm:text-sm break-words">
+                <span className="font-bold">Transaction Hash:</span>{" "}
+                <span className="block sm:inline">{hash}</span>
+              </div>
             )}
+
             {isConfirming && (
               <div className="text-xs sm:text-sm">
                 Waiting for confirmation...
