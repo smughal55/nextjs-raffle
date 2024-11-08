@@ -108,6 +108,18 @@ const RaffleEntrance = () => {
     return ethers.formatEther(jackpotTotal.toString());
   };
 
+  // Generate blockchain explorer link based on chainId
+  const getExplorerLink = (hash) => {
+    const explorerUrls = {
+      1: "https://etherscan.io/tx/",
+      5: "https://goerli.etherscan.io/tx/",
+      8453: "https://basescan.org/tx/",
+      84532: "https://sepolia.basescan.org/tx/",
+      // Add more network URLs as needed
+    };
+    return explorerUrls[chainId] ? `${explorerUrls[chainId]}${hash}` : null;
+  };
+
   return (
     <div className="p-4 sm:p-8 font-satoshi font-semibold text-base sm:text-lg text-gray-700 text-center">
       {alertMessage && (
@@ -145,6 +157,21 @@ const RaffleEntrance = () => {
               <div className="text-xs sm:text-sm break-words">
                 <span className="font-bold">Transaction Hash:</span>{" "}
                 <span className="block sm:inline">{hash}</span>
+              </div>
+            )}
+
+            {!isConfirmed && hash && (
+              <div className="text-xs sm:text-sm text-blue-500 mt-2 break-words">
+                Check your transaction status on the blockchain explorer:{" "}
+                <a
+                  href={getExplorerLink(hash)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline break-words"
+                  style={{ wordBreak: "break-all" }}
+                >
+                  View Transaction
+                </a>
               </div>
             )}
 
